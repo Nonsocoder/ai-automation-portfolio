@@ -16,16 +16,8 @@ Support emails are passed to an AI Agent that:
 Queries a Supabase vector store for relevant knowledge-base context
 Generates a reply grounded in that context
 Creates a Gmail draft (not auto-sent — a human still reviews before sending)
-Architecture
-Gmail Trigger → Extract Body → Classify (LLM)
-                                   │
-                        ┌──────────┴──────────┐
-                   Promotional           Support Service
-                   (dropped)                   │
-                                          AI Agent (RAG)
-                                          │           │
-                                 Supabase Vector   Gmail Draft
-                                    Store (KB)       (output)
+
+
 Tech used
 n8n (workflow engine)
 OpenRouter (DeepSeek Chat v3) — classification + agent reasoning
