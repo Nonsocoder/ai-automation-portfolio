@@ -1,0 +1,370 @@
+{
+  "name": "Auto Follow up",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d7aebd62-0e72-43b1-aa11-fea0d7ded923",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app1EmJtG5zdYTBGI",
+          "mode": "list",
+          "cachedResultName": "Nonso_n8n",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK3gKT2D4FOmmy5",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI/tblK3gKT2D4FOmmy5"
+        },
+        "filterByFormula": "{Status} = 'New'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e3aa53ad-4708-4d07-a99b-81edf038fb19",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "1zB7vnvRiJPi7Rmh",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst currentTime = new Date();\n\nconst filteredItems = items.filter((item) => {\n  const itemTime = new Date(item?.json?.createdTime);\n  const diffInMinutes = (currentTime - itemTime) / (1000 * 60);\n  return diffInMinutes <= 60;\n});\n\nreturn filteredItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "02e7b8fe-8835-4bc7-8e28-27773d623e4a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.fields.Email }}",
+        "subject": "=Following up — still interested in {{ $json.fields['Service Interested'] }}?",
+        "message": "=Hi {{ $json.fields.Name }},  Just wanted to follow up on your inquiry — I didn't want it to slip through the cracks!<br></br> Let me know if you have any questions or if you'd like to schedule a quick call.<br></br>  Best,<br> John",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "76fbbc67-c6af-4c16-a666-89ca52f103d9",
+      "name": "Send a message",
+      "webhookId": "441495a9-184c-42d1-95e6-323498d2ccee",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KaP3jR5T4djqVCYj",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "74754bad-74f9-4919-b3d9-aefb8d9c1b6d",
+      "name": "Send an SMS/MMS/WhatsApp message",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1EmJtG5zdYTBGI",
+          "mode": "list",
+          "cachedResultName": "Nonso_n8n",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK3gKT2D4FOmmy5",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI/tblK3gKT2D4FOmmy5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Follow up sent": true,
+            "id": "={{ $('Code in JavaScript').item.json.id }}",
+            "Lead Score": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date/time",
+              "displayName": "Date/time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company1",
+              "displayName": "Company1",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Service Interested",
+              "displayName": "Service Interested",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "How soon do you want the service",
+              "displayName": "How soon do you want the service",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Score",
+              "displayName": "Lead Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tag",
+              "displayName": "Tag",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow up sent",
+              "displayName": "Follow up sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "c7bb669c-06d7-49ba-a197-1c541e1be001",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "1zB7vnvRiJPi7Rmh",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b75d6e0f-1045-46f0-914e-e1085c866813",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fd355379363093a7d183df9599fa43bd154c3ce773e0215cbcf111aca7604f2b"
+  },
+  "nodeGroups": [],
+  "id": "qw0IcQXtuVl2lCSG",
+  "tags": []
+}

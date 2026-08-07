@@ -1,0 +1,961 @@
+{
+  "name": "Lead Capture to Airtable copy",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-capture",
+        "options": {}
+      },
+      "id": "087083e6-7449-432a-9136-b9f2fe787c74",
+      "name": "Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        96
+      ],
+      "webhookId": "0f78f8a9-2665-48f3-865b-9a59dc61328f"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app1EmJtG5zdYTBGI",
+          "mode": "list",
+          "cachedResultName": "Nonso_n8n",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK3gKT2D4FOmmy5",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI/tblK3gKT2D4FOmmy5"
+        },
+        "filterByFormula": "={Email} = '{{ $json.question_8G7aok }}'",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "id": "1f8787ec-7f6b-4e5a-a9ad-154936875086",
+      "name": "Find Existing Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        96
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "1zB7vnvRiJPi7Rmh",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "has-id",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f3d8f3b3-3e8a-4221-8e76-736888ec7411",
+      "name": "Lead Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1EmJtG5zdYTBGI",
+          "mode": "list",
+          "cachedResultName": "Nonso_n8n",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK3gKT2D4FOmmy5",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI/tblK3gKT2D4FOmmy5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "value": {
+            "id": "={{ $json.id }}",
+            "Name": "={{ $(\"Normalize Input\").item.json.question_XEZJle }}",
+            "Email": "={{ $(\"Normalize Input\").item.json.question_8G7aok }}",
+            "Company1": "={{ $(\"Normalize Input\").item.json.question_9Ob9qX }}",
+            "Phone Number": "={{ $(\"Normalize Input\").item.json.question_WY05Wa }}"
+          },
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "required": false,
+              "display": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "Company1",
+              "displayName": "Company1",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "type": "string",
+              "display": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1c9efce6-c434-4a49-a008-46e020162683",
+      "name": "Update Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        0
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "1zB7vnvRiJPi7Rmh",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app1EmJtG5zdYTBGI",
+          "mode": "list",
+          "cachedResultName": "Nonso_n8n",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK3gKT2D4FOmmy5",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI/tblK3gKT2D4FOmmy5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Normalize Input').item.json.question_XEZJle }}",
+            "Email": "={{ $('Normalize Input').item.json.question_8G7aok }}",
+            "Phone Number": "={{ $('Normalize Input').item.json.question_WY05Wa }}",
+            "Service Interested": "={{ $('Normalize Input').item.json.question_oo4yqX }}",
+            "How soon do you want the service": "={{ $('Normalize Input').item.json.question_6vx2lB }}",
+            "Company1": "={{ $('Normalize Input').item.json.question_9Ob9qX }}",
+            "Date/time": "={{ new Date($('Lead Webhook').item.json.body.data.createdAt).toLocaleString('en-GB', {\n  day: '2-digit',\n  month: '2-digit',\n  year: 'numeric',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false\n}) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Attachment Summary",
+              "displayName": "Attachment Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date/time",
+              "displayName": "Date/time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company1",
+              "displayName": "Company1",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Service Interested",
+              "displayName": "Service Interested",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "How soon do you want the service",
+              "displayName": "How soon do you want the service",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5be05d64-cd8c-41e6-a2f6-4d519d10b120",
+      "name": "Create Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        192
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "1zB7vnvRiJPi7Rmh",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Normalize Input').item.json.question_8G7aok }}",
+        "subject": "Thanks for reaching out!",
+        "message": "=Hi {{ $('Normalize Input').item.json.question_XEZJle }},<br><br>Thanks for your interest! We have received your details and our team will be in touch shortly.<br><br>Best regards,<br>The Team",
+        "options": {}
+      },
+      "id": "ea6478a9-3066-4464-934d-2f5092543a36",
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2304,
+        272
+      ],
+      "webhookId": "9dc8416d-9116-4c44-9435-547221190014",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KaP3jR5T4djqVCYj",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BGCC4SHQX",
+          "mode": "list",
+          "cachedResultName": "all-nonso-n8n"
+        },
+        "text": "=We just got a new lead! Score: {{ $('Parse lead').item.json.score }} | Tag: {{ $('Parse lead').item.json.tag }} | Reasoning: {{ $('Parse lead').item.json.reasoning }}",
+        "otherOptions": {}
+      },
+      "id": "0df519ac-82ed-4775-8d0d-10f0e3aa421f",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        2304,
+        112
+      ],
+      "webhookId": "8e5199cb-2ea4-444a-a0c0-0ae2f5acc7a8",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "JCHCSJT16QH7tuPu",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Service Interested: {{ $json.fields['Service Interested'] }}\nPhone Number:{{ $json.fields['Phone Number'] }}\nCompany:{{ $json.fields.Company1 }}\nFull Name:{{ $json.fields.Name }}\nEmail:{{ $json.fields.Email }}\nHow soon do you want the service:{{ $json.fields['How soon do you want the service'] }}\nBudget:{{ $('Normalize Input').item.json.question_aEGYLq }}"
+            },
+            {
+              "content": "You are a lead qualification assistant for a marketing agency. You will be given details about an inbound lead. Your job is to score how sales-ready this lead is on a scale of 1-10, based on urgency, budget signals, and clarity of intent expressed in their message.\n\nScoring guide:\n- 8-10: Clear budget, urgent timeline, specific service need, decision-maker language (\"we need this live by...\", \"ready to start now\")\n- 5-7: Interested but vague on timeline or budget, general inquiry with some specificity\n- 1-4: Just exploring, no budget/timeline mentioned, vague or generic message, likely early-stage research\n\nRespond with ONLY valid JSON in this exact format, no preamble, no markdown formatting, no code fences:\n\n{\n  \"score\": <integer 1-10>,\n  \"tag\": \"<Hot|Warm|Cold>\",\n  \"reasoning\": \"<one sentence explaining the score>\"\n}\n##IMPORTANT\nput the score, tag and reasoning as seperate variables\n\nTag rules: score 8-10 = \"Hot\", score 5-7 = \"Warm\", score 1-4 = \"Cold\"\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "9c484861-4ec8-4aed-af5e-45091dede807",
+      "name": "Message a model",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1136,
+        192
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1EmJtG5zdYTBGI",
+          "mode": "list",
+          "cachedResultName": "Nonso_n8n",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK3gKT2D4FOmmy5",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/app1EmJtG5zdYTBGI/tblK3gKT2D4FOmmy5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Create Lead').item.json.id }}",
+            "Name": "={{ $('Create Lead').item.json.fields.Name }}",
+            "Email": "={{ $('Create Lead').item.json.fields.Email }}",
+            "Company1": "={{ $('Create Lead').item.json.fields.Company1 }}",
+            "Phone Number": "={{ $('Create Lead').item.json.fields['Phone Number'] }}",
+            "Service Interested": "={{ $('Create Lead').item.json.fields['Service Interested'] }}",
+            "How soon do you want the service": "={{ $('Normalize Input').item.json.question_6vx2lB }}",
+            "Lead Score": "={{ $json.score }}",
+            "Tag": "={{ $json.tag }}",
+            "Reason": "={{ $json.reasoning }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachment Summary",
+              "displayName": "Attachment Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date/time",
+              "displayName": "Date/time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company1",
+              "displayName": "Company1",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Service Interested",
+              "displayName": "Service Interested",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "How soon do you want the service",
+              "displayName": "How soon do you want the service",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Score",
+              "displayName": "Lead Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tag",
+              "displayName": "Tag",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        192
+      ],
+      "id": "702df0d8-9c62-49ed-9278-367807359263",
+      "name": "Create or update a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "1zB7vnvRiJPi7Rmh",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6e9fc1b0-0c3d-4464-8814-a09b49665a09",
+              "leftValue": "={{ $('Parse lead').item.json.tag }}",
+              "rightValue": "Hot",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2000,
+        192
+      ],
+      "id": "81b1181e-e0f9-46a9-9576-182cd131a8d0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst normalizedData = items.map((item) => {\n  const data = item.json;\n  const fields = data.body.data.fields;\n  const normalizedFields = fields.reduce((acc, field) => {\n    let value = field.value;\n    // Tally dropdown / multiple-choice fields arrive as arrays of internal\n    // option IDs. Resolve them to their human-readable text labels.\n    if (Array.isArray(value) && Array.isArray(field.options)) {\n      const labels = value.map((id) => {\n        const opt = field.options.find((o) => o.id === id);\n        return opt ? opt.text : id;\n      });\n      value = labels.join(', ');\n    }\n    acc[field.key] = value;\n    return acc;\n  }, {});\n  return normalizedFields;\n});\nreturn normalizedData;\n"
+      },
+      "id": "8e3969ef-7143-4544-b648-6304dd4598c2",
+      "name": "Normalize Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract score, reasoning and tag from the Gemini model output as separate variables.\n// The model returns its JSON as a string inside content.parts[0].text (and sometimes\n// wrapped in markdown code fences), so we locate and parse it defensively.\n\nconst results = [];\n\nfor (const item of $input.all()) {\n  const json = item.json || {};\n\n  // Find the raw payload: either already-parsed top-level fields, or the text part.\n  let parsed = null;\n\n  if (json.score !== undefined || json.tag !== undefined || json.reasoning !== undefined) {\n    parsed = json;\n  } else {\n    const rawText = json?.content?.parts?.[0]?.text ?? json?.text ?? '';\n    if (rawText) {\n      // Strip markdown code fences if present, then grab the first {...} block.\n      const cleaned = String(rawText).replace(/```(?:json)?/gi, '').trim();\n      const match = cleaned.match(/\\{[\\s\\S]*\\}/);\n      const toParse = match ? match[0] : cleaned;\n      try {\n        parsed = JSON.parse(toParse);\n      } catch (e) {\n        parsed = {};\n      }\n    } else {\n      parsed = {};\n    }\n  }\n\n  const score = parsed.score !== undefined ? Number(parsed.score) : null;\n  const reasoning = parsed.reasoning ?? null;\n  let tag = parsed.tag ?? null;\n\n  // Derive tag from score if the model omitted it.\n  if (!tag && score !== null && !Number.isNaN(score)) {\n    tag = score >= 8 ? 'Hot' : score >= 5 ? 'Warm' : 'Cold';\n  }\n\n  results.push({ json: { score, tag, reasoning } });\n}\n\nreturn results;\n"
+      },
+      "id": "2813ba7c-0d5a-42aa-a429-f08bbfc46a12",
+      "name": "Parse lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        192
+      ]
+    }
+  ],
+  "pinData": {
+    "Lead Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "khamani.app.n8n.cloud",
+            "user-agent": "Tally Webhooks",
+            "content-length": "2113",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, br",
+            "baggage": "sentry-environment=production,sentry-release=f0fd36e220cd50900a81ca06f29307b1f0bffd7a,sentry-public_key=6af4b6673f1648edaa8fef3f2ca43405,sentry-trace_id=77ad29eb2a254f15b17a5ef8173e57b7,sentry-org_id=407628,sentry-sampled=false,sentry-sample_rand=0.7920610541307279,sentry-sample_rate=0",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "34.96.62.162",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "BE",
+            "cf-ray": "a21c22718ba6d110-CDG",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "sentry-trace": "77ad29eb2a254f15b17a5ef8173e57b7-8a8cfa1f4ff46853-0",
+            "x-forwarded-for": "34.96.62.162, 172.71.127.136",
+            "x-forwarded-host": "khamani.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-swc-19-6cff947fff-fkzqd",
+            "x-is-trusted": "yes",
+            "x-real-ip": "34.96.62.162"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "eventId": "835e49c3-8236-46bc-934a-00fbe238d763",
+            "eventType": "FORM_RESPONSE",
+            "createdAt": "2026-07-27T13:54:10.725Z",
+            "data": {
+              "responseId": "o9lQ0EX",
+              "submissionId": "o9lQ0EX",
+              "respondentId": "q4NbVqO",
+              "formId": "gD196M",
+              "formName": "Leads",
+              "createdAt": "2026-07-27T13:54:10.000Z",
+              "submissionPdfUrl": "https://api.tally.so/forms/gD196M/submissions/o9lQ0EX/pdf?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJtaXNzaW9uSWQiOiJvOWxRMEVYIiwiZm9ybUlkIjoiZ0QxOTZNIiwiaWF0IjoxNzg1MTYwNDUwfQ.JVkAOQW_wEr_q0ojjsOTbfZTkoA-HzYGezkKl1qiHBo&signature=7062e487af8e7511e63b072334277eb8a98b53d5807b1bb71d577d3c95cbe466",
+              "submissionPreviewUrl": "https://tally.so/forms/gD196M/submissions/o9lQ0EX/preview?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJtaXNzaW9uSWQiOiJvOWxRMEVYIiwiZm9ybUlkIjoiZ0QxOTZNIiwiaWF0IjoxNzg1MTYwNDUwfQ.JVkAOQW_wEr_q0ojjsOTbfZTkoA-HzYGezkKl1qiHBo&signature=7062e487af8e7511e63b072334277eb8a98b53d5807b1bb71d577d3c95cbe466",
+              "fields": [
+                {
+                  "key": "question_XEZJle",
+                  "label": "Fulll Name",
+                  "type": "INPUT_TEXT",
+                  "value": "obih chinonso"
+                },
+                {
+                  "key": "question_8G7aok",
+                  "label": "Email",
+                  "type": "INPUT_EMAIL",
+                  "value": "JohndoeeeEe@gmail.com"
+                },
+                {
+                  "key": "question_9Ob9qX",
+                  "label": "Company",
+                  "type": "INPUT_TEXT",
+                  "value": "Nigeria"
+                },
+                {
+                  "key": "question_WY05Wa",
+                  "label": "Phone Number",
+                  "type": "INPUT_PHONE_NUMBER",
+                  "value": "+12345678900"
+                },
+                {
+                  "key": "question_oo4yqX",
+                  "label": "Service interested",
+                  "type": "INPUT_TEXT",
+                  "value": "i am interested in getting automation for my company"
+                },
+                {
+                  "key": "question_aEGYLq",
+                  "label": "Budget",
+                  "type": "DROPDOWN",
+                  "value": [
+                    "5187f78d-e123-48ce-b320-22f85dcb47bc"
+                  ],
+                  "options": [
+                    {
+                      "id": "753a5447-b3d1-49bb-b96d-b79903a05246",
+                      "text": "<$1k"
+                    },
+                    {
+                      "id": "5187f78d-e123-48ce-b320-22f85dcb47bc",
+                      "text": "$1k - $5k"
+                    },
+                    {
+                      "id": "025289fc-1577-47e2-bcc1-65977cca7136",
+                      "text": "$5k+"
+                    }
+                  ]
+                },
+                {
+                  "key": "question_6vx2lB",
+                  "label": "How soon are you looking to start?",
+                  "type": "DROPDOWN",
+                  "value": [
+                    "a9edbc40-a631-4ae0-8b1a-f528d6504282"
+                  ],
+                  "options": [
+                    {
+                      "id": "a9edbc40-a631-4ae0-8b1a-f528d6504282",
+                      "text": "ASAP"
+                    },
+                    {
+                      "id": "411da302-3e22-49df-b5fd-017ec660578d",
+                      "text": "within a month"
+                    },
+                    {
+                      "id": "1e6d8612-4165-420d-b8a6-3bb9a4cb390e",
+                      "text": "Just exploring"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "webhookUrl": "https://khamani.app.n8n.cloud/webhook-test/lead-capture",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Message a model": [
+      {
+        "json": {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\n  \"score\": 9,\n  \"tag\": \"Hot\",\n  \"reasoning\": \"The lead indicates high urgency with 'ASAP' and provides a clear budget range, showing strong intent for automation services.\"\n}"
+              }
+            ]
+          },
+          "finishReason": "STOP",
+          "avgLogprobs": -1.429702606201172
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Existing Lead": {
+      "main": [
+        [
+          {
+            "node": "Lead Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Exists?": {
+      "main": [
+        [
+          {
+            "node": "Update Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Lead": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Confirmation Email": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Parse lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a record": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Find Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse lead": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "76cea996-d6df-4f8c-a6ce-2f55493b2b06",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fd355379363093a7d183df9599fa43bd154c3ce773e0215cbcf111aca7604f2b"
+  },
+  "nodeGroups": [],
+  "id": "IbhKxKPQudZSdFZO",
+  "tags": [
+    {
+      "updatedAt": "2026-07-27T10:35:48.304Z",
+      "createdAt": "2026-07-27T10:35:48.304Z",
+      "id": "uzslA9NdWS8iyB9t",
+      "name": "Lead scoring with AI"
+    }
+  ]
+}

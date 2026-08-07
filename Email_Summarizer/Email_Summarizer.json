@@ -1,0 +1,783 @@
+{
+  "name": "Email_Summarizer",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1a8c67cb-aee3-4504-b9d1-293ec4bfe2a0",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xQgxSRNDlk60n6Ex",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.snippet }}",
+        "options": {
+          "systemMessage": "#Overview\nYou are a helpful assistant that summarizes the content of incoming gmails\n#OUTPUT DESCRIPTION- output only the summary. Don't add anything like: Is there anything else you'd like me to summarize or clarify?\t\n\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6690aacd-610a-4a64-902c-4bf3ab3b2d7a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat-v3-0324",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        144,
+        176
+      ],
+      "id": "5ba3f9f1-bc35-43c3-a08b-999376c720d9",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "l2kTTcoGqefTM1rA",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1271362249",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "0155bebf-d733-44d7-b1a7-61bf86e210a6",
+      "name": "Send a text message",
+      "webhookId": "a5354ae1-769b-432b-ad46-1440626b36b1",
+      "credentials": {
+        "telegramApi": {
+          "id": "x0nbK0UnmWGWC7hU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        592
+      ],
+      "id": "78b72f53-54db-40d5-b62a-db2683fc8bd5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/today",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        80,
+        384
+      ],
+      "id": "2abdab34-129d-455a-a54f-afa171d8a57d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9c217705-6243-42a1-bd36-e5a6eab1220c",
+              "name": "motivational_quote",
+              "value": "={{ $json.q }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        384
+      ],
+      "id": "c9fd0457-49d0-4111-854a-fb97e4413c2a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "obihchinonso7@gmail.com",
+        "subject": "Motivational Quote",
+        "message": "={{ $json.motivational_quote }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        384
+      ],
+      "id": "b911535e-7216-412c-a649-db72a84ad144",
+      "name": "Send a message",
+      "webhookId": "e076512c-e2d0-4342-a878-e4d31e4dc4ba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xQgxSRNDlk60n6Ex",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.frankfurter.dev/v2/rate/USD/NGN",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        608
+      ],
+      "id": "7b87dee4-3edf-4329-90a6-29634b75371c",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56f33a8f-151e-4112-ae32-ecef5e2e514a",
+              "name": "Current_rate",
+              "value": "={{ $json.rate }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        608
+      ],
+      "id": "c53350b3-fb4c-4e3d-bd09-87decda1d65e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        592
+      ],
+      "id": "1c63dc3d-9bcd-43dc-bda2-3343caff57f6",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hlkacTZMnWyLeTuG",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "obihnonso@gmail.com",
+        "subject": "exchange_rate",
+        "message": "=The current exchange just rose to {{ $('Edit Fields1').item.json.Current_rate }} ",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        608
+      ],
+      "id": "b007c274-31ec-455e-946d-dde07473e9fe",
+      "name": "Send a message1",
+      "webhookId": "8c7aa271-f954-4d73-87cc-0af32400ed78",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xQgxSRNDlk60n6Ex",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0ac646f0-c4ae-495b-921a-844ceca42cce",
+              "leftValue": "={{ $json.Current_rate }}",
+              "rightValue": "=1400",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        352,
+        768
+      ],
+      "id": "8cfc3c9c-5e68-4708-a640-9b32cf99dc38",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -336,
+        1072
+      ],
+      "id": "26b2e4df-e510-422f-886d-82a3548fb086",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        1072
+      ],
+      "id": "996c218d-ee1b-4d29-9246-a2244a97c770",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hlkacTZMnWyLeTuG",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3cb7a6d5-148a-40dc-8471-6721302c9d7c",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        1072
+      ],
+      "id": "1edca8bb-ec96-4adc-bb21-b29457955e06",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "sendTo": "obihchinonso7@gmail.com",
+        "subject": "pending task",
+        "message": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1088,
+        1072
+      ],
+      "id": "649d95e8-9355-4ff4-ad08-f0f9fb59fdc0",
+      "name": "Send a message2",
+      "webhookId": "11edc6b5-8bc4-4069-8ad5-4481a76b6964",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xQgxSRNDlk60n6Ex",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        576,
+        1072
+      ],
+      "id": "7d841251-69ca-4f72-adad-c347a7f627f1",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ed451939-6100-4c4c-9249-643a6ed6c41d",
+              "name": "message",
+              "value": "=Good morning here are your pending tasks: {{ $json.data[1].Task }} and {{ $json.data[0].Task }} ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        784,
+        1072
+      ],
+      "id": "0d1a9c2a-2b91-488d-a1fa-e29828e4e38d",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://https//ceejay.app.n8n.cloud/webhook-test/youtube-summary",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -128,
+        1072
+      ],
+      "id": "77e24453-14e7-4585-8b4b-e2ddfb8be112",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "17_ypY4gUmTAO6H8dFKCclETW1WOCQjxd",
+          "mode": "list",
+          "cachedResultName": "Invoice",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/17_ypY4gUmTAO6H8dFKCclETW1WOCQjxd"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        224,
+        1216
+      ],
+      "id": "2a401584-3b52-497f-8d81-534a6ed0fc15",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "eXAvunQW7f0VYWYa",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1Z-0ilEUpcfbx1fA0F-QKQjsMS6cbQo-j",
+          "mode": "list",
+          "cachedResultName": "Gemini_Generated_Image_wjau7vwjau7vwjau.png",
+          "cachedResultUrl": "https://drive.google.com/file/d/1Z-0ilEUpcfbx1fA0F-QKQjsMS6cbQo-j/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        432,
+        1216
+      ],
+      "id": "686064e8-3642-4a13-9ef9-7954a89a7ddf",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "eXAvunQW7f0VYWYa",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        1216
+      ],
+      "id": "7c80f2fe-d2fb-43e5-8f27-77095b1692b8",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "attributes": {
+          "attributes": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        848,
+        1216
+      ],
+      "id": "d87caba3-60d5-4696-bbd0-80b8f42d987b",
+      "name": "Information Extractor"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c4555948-780c-4dd1-b964-e2a6503a9951",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "181f6891a9528ee57059f8adbca2371e565f8a074a71a221a145604ef70594ec"
+  },
+  "nodeGroups": [],
+  "id": "geVuac5QggIc52sr",
+  "tags": []
+}

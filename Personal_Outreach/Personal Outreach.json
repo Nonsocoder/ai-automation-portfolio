@@ -1,0 +1,356 @@
+{
+  "name": "Personal Outreach",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e8b64af8-d3f4-49f4-adf6-824607cd0f47",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yhML8jHrggJzF73Yrifua1wQr81vd4dCyeMgbq4CYtg",
+          "mode": "list",
+          "cachedResultName": "Personalized Outreach",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yhML8jHrggJzF73Yrifua1wQr81vd4dCyeMgbq4CYtg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yhML8jHrggJzF73Yrifua1wQr81vd4dCyeMgbq4CYtg/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Contact Status",
+              "lookupValue": "Not verified"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ce331ef0-7fcc-4af3-ae92-fc52b582183c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UbNp18AO3rFlC8TO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "76726013-92b2-46ca-9075-984dde6749ae",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        16
+      ],
+      "id": "1bd907f0-1a93-468e-a4d3-edb9b3704e52",
+      "name": "Wait",
+      "webhookId": "9a8af2d9-33a0-4d04-aefd-837f138e7aee"
+    },
+    {
+      "parameters": {
+        "sendTo": "obihnonso@gmail.com",
+        "subject": "={{ $json['Email Subject'] }}",
+        "message": "={{ $json['Email Body'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        16
+      ],
+      "id": "41e08c8a-eb9a-45aa-822a-ee181957d8c5",
+      "name": "Send a message",
+      "webhookId": "b4f74dfc-33df-454e-9049-c2a6ee7c59f9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KaP3jR5T4djqVCYj",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yhML8jHrggJzF73Yrifua1wQr81vd4dCyeMgbq4CYtg",
+          "mode": "list",
+          "cachedResultName": "Personalized Outreach",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yhML8jHrggJzF73Yrifua1wQr81vd4dCyeMgbq4CYtg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yhML8jHrggJzF73Yrifua1wQr81vd4dCyeMgbq4CYtg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $('Get row(s) in sheet').item.json.email }}",
+            "Contact Status": "Verified"
+          },
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "Agency Name",
+              "displayName": "Agency Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Primary Services",
+              "displayName": "Primary Services",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Why They're a Fit for Automation",
+              "displayName": "Why They're a Fit for Automation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Likely Pain Point",
+              "displayName": "Likely Pain Point",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Clutch Profile (verify + find contact form)",
+              "displayName": "Clutch Profile (verify + find contact form)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Contact Status",
+              "displayName": "Contact Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes / Next Step",
+              "displayName": "Notes / Next Step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1264,
+        16
+      ],
+      "id": "644f3849-195e-492f-b132-729157524e81",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UbNp18AO3rFlC8TO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "069eacc1-7cf8-43b4-83d4-bc3c631cad52",
+              "name": "Email Subject",
+              "value": "Quick question about your lead follow-up process",
+              "type": "string"
+            },
+            {
+              "id": "4929eca6-d1fa-4aa4-b12f-f42ca4fbab26",
+              "name": "Email Body",
+              "value": "=Hi {{ $json[\"Agency Name\"] }} works with {{ $json['Primary Services'] }} — I help agencies like yours automate lead capture and follow-up so no inquiry falls through the cracks.  Would you be open to a quick chat this week?  Best, [John]",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        16
+      ],
+      "id": "e784fa01-2e38-41e5-b547-9e93c82ddb03",
+      "name": "Email Body & Subject"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Email Body & Subject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Body & Subject": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "51730f08-c5e7-4cca-9a82-7494612bfb9d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fd355379363093a7d183df9599fa43bd154c3ce773e0215cbcf111aca7604f2b"
+  },
+  "nodeGroups": [],
+  "id": "6e7sMqP8nil0E3jH",
+  "tags": []
+}

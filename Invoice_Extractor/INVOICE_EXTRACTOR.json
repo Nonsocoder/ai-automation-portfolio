@@ -1,0 +1,403 @@
+{
+  "name": "INVOICE_EXTRACTOR",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "17_ypY4gUmTAO6H8dFKCclETW1WOCQjxd",
+          "mode": "list",
+          "cachedResultName": "Invoice",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/17_ypY4gUmTAO6H8dFKCclETW1WOCQjxd"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "80e670ef-9f6b-45b7-8f52-454778428316",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "eXAvunQW7f0VYWYa",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c8d1b0dc-e67f-4dc1-af7e-7d324c2eb11c",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "eXAvunQW7f0VYWYa",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7f6fe93e-d792-46a7-ba25-07f4e07bf3cf",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "Company_Name",
+              "description": "This will be the name of the company"
+            },
+            {
+              "name": "Company_Address",
+              "description": "This will be the address of the company"
+            },
+            {
+              "name": "company_email",
+              "description": "This will be the company's email"
+            },
+            {
+              "name": "invoice_date",
+              "type": "date",
+              "description": "this will be the date of the invoice"
+            },
+            {
+              "name": "invoice_number",
+              "type": "number",
+              "description": "This will be the number of the invoice"
+            },
+            {
+              "name": "Payment_method",
+              "description": "This will be the payment method of the invoice"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "You are an expert extraction algorithm.\nOnly extract relevant information from the text.\nIf you do not know the value of an attribute asked to extract, you may omit the attribute's value."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "72b8977e-6ab6-4318-96fb-5dc6198400ef",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        144
+      ],
+      "id": "a2d0247a-d138-4d8e-be35-8ad95d7ef52f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nVq0Xc282QM4dxp2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $json.output.Company_Name }}",
+            "Company Email": "={{ $json.output.company_email }}",
+            "Company Address": "={{ $json.output.Company_Address }}",
+            "Invoice Date": "={{ $json.output.invoice_date }}",
+            "Invoice Number": "={{ $json.output.invoice_number }}",
+            "Payment Method": "={{ $json.output.Payment_method }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Address",
+              "displayName": "Company Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Email",
+              "displayName": "Company Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice Date",
+              "displayName": "Invoice Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice Number",
+              "displayName": "Invoice Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Payment Method",
+              "displayName": "Payment Method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        0
+      ],
+      "id": "533d6c9f-8d61-45e9-a6be-28ce42a6d201",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hlkacTZMnWyLeTuG",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Company Name:{{ $json['Company Name'] }}\nCompany Email:{{ $json['Company Email'] }}\nCompany Address:{{ $json['Company Address'] }}\nInvoice Number:{{ $json['Invoice Number'] }}\nInvoice Date:{{ $json['Invoice Date'] }}\nPayment Method: {{ $json['Payment Method'] }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "#Overview\nYou are an email expert for AURATECH solutions named Napoleon. You will receive invoice information. Your job is to notify the billig team that an invoice was sent/received.\n\n##Email\nIn the email make sure to include that the system has also added to the google sheets which they can view here: https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit?usp=sharing\n\n##OUTPUT\nyour output should be in the following JSON format \nThe JSON must have exactly these two keys:\n{\n  \"emailSubject\": \"subject of the email\",\n  \"emailBody\": \"body of the email\"\n}\n##RULES\n- Do not include markdown.\n- Do not wrap the JSON in ```json``` fences.\n- Do not add explanations or any extra text.\n- The output must be valid JSON.\n-Make sure the email is in HTML format"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        0
+      ],
+      "id": "e3064661-9d34-41ac-9a4e-e7d777454228",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nVq0Xc282QM4dxp2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "obihnonso@gmail.com",
+        "subject": "New Invoice 20268942 Notification - AURATECH SOLUTIONS",
+        "message": "<html><body><p>Dear Billing Team,</p><p>This is to inform you that a new invoice has been processed and recorded.</p><p><b>Invoice Details:</b></p><ul><li><b>Company Name:</b> AURATECH SOLUTIONS</li><li><b>Company Email:</b> billing@auratechsolutions.com</li><li><b>Invoice Number:</b> 20268942</li><li><b>Invoice Date:</b> 2026-06-20</li><li><b>Payment Method:</b> ACH transfer</li></ul><p>The system has also added this invoice information to the Google Sheets, which you can view here: <a href=\\\"https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit?usp=sharing\\\">https://docs.google.com/spreadsheets/d/1NCE9JNDphtEFzACbOrJLzyeUWQ1phNdubK3ru3bNqzs/edit?usp=sharing</a></p><p>Best regards,</p><p>Napoleon - AURATECH Solutions Email Expert</p></body></html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1536,
+        0
+      ],
+      "id": "31a1efec-fd8b-40ba-9472-e9cc724004d2",
+      "name": "Send a message",
+      "webhookId": "74ab0810-3921-40bf-9062-2a31274f5c9c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xQgxSRNDlk60n6Ex",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7efc3fef-e65e-48de-b767-e3c1a0db3e64",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "181f6891a9528ee57059f8adbca2371e565f8a074a71a221a145604ef70594ec"
+  },
+  "nodeGroups": [],
+  "id": "T7C6wX7rFf0dbe2V",
+  "tags": []
+}
